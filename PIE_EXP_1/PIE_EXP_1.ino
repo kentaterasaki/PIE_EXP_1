@@ -1,7 +1,7 @@
 // Constants for controlling LED behavior
 const uint16_t period = 400; // Time interval between toggling LED in milliseconds
 const int numLeds = 4;
-int ledPins[numLeds] = {4, 5, 6, 7};
+int ledPins[numLeds] = {4, 5, 6, 7}; // curly braces are the way C++ represents arrays 
 uint32_t pastTime; // Global variable to store the time that LED last changed state
 int firstCounter = 0;
 int potPin = A0; //Initializes Potentiometer pin 
@@ -10,13 +10,18 @@ int buttonState = 0;
 int modeCounter = 0;
 // Function to check if it's time to change LED state
 bool it_is_time(uint32_t t, uint32_t t0, uint16_t dt) {
-  return ((t >= t0) && (t - t0 >= dt)) ||         // The first disjunct handles the normal case
+  // t = current time retrieved using millis() where millis() counts the number of milliseconds since our program started
+  // t0 = previous recorded time (pastTime in our script)
+  // dt = interval time that decides how frequently the LED state should change
+  return ((t >= t0) && (t - t0 >= dt)) ||         // in english ((current time >= past time) && (current time - last recorded time >= time interval)) || (or) calculate the time since overflow to the time before overflow
             ((t < t0) && (t + (~t0) + 1 >= dt)); 
 }
 
+// setup() function is similar to __init__ in Python classes
 void setup() {
   // Set LED pins as OUTPUT
-  Serial.begin(9600);
+  Serial.begin(9600); // This is the baud rate (bits per second in data transmission)
+  // this iteration is used to associate pin numbers with LED at a specific index; set pin as OUTPUT since this means we can send signals to it
   for (int i = 0; i < numLeds; i++) {
     pinMode(ledPins[i], OUTPUT);
   }
@@ -57,9 +62,9 @@ void loop() {
 
 // Function to create a blinking effect for all LEDs
 void blink() {
-  int potValue = analogRead(potPin);
+  int potValue = analogRead(potPin); // reads the value of the potentiometer pin and 
   // Map the potentiometer value (0-1023) to the desired range of period (e.g., 100-2000)
-  uint16_t mappedPeriod = map(potValue, 0, 1023, 100, 2000);
+  uint16_t mappedPeriod = map(potValue, 0, 1023, 100, 2000); // maps the potentiometer readings (0, 1023) to the desired range for blinking (100, 2000). when the potentiometer reading is 0, blinking/second will be 100.
   // Update the period based on the potentiometer value
   int period = mappedPeriod;
   // Local variable to store the current value of the millis timer
@@ -154,8 +159,3 @@ void bounce() {
     digitalWrite(ledPins[i], LOW);
   } 
 }
-
-    
-
-
-
